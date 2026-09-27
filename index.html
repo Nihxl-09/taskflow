@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow — Project Management</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-mark">T</div>
+            <div>
+                <h1>TaskFlow</h1>
+                <span>Project Management</span>
+            </div>
+        </div>
+
+        <nav class="navigation">
+            <button class="nav-item active" data-section="overview">
+                <span>⌂</span>
+                Overview
+            </button>
+
+            <button class="nav-item" data-section="projects">
+                <span>▦</span>
+                Projects
+            </button>
+
+            <button class="nav-item" data-section="tasks">
+                <span>✓</span>
+                My Tasks
+            </button>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="profile">
+                <div class="avatar">N</div>
+                <div>
+                    <strong>Nihal</strong>
+                    <span>Personal Workspace</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h2 id="pageTitle">Overview</h2>
+                <p id="pageSubtitle">Manage your work and stay organized.</p>
+            </div>
+
+            <button class="primary-btn" id="newTaskBtn">
+                + New Task
+            </button>
+        </header>
+
+        <!-- OVERVIEW -->
+        <section class="page-section active" id="overviewSection">
+
+            <div class="welcome-card">
+                <div>
+                    <span class="eyebrow">Workspace overview</span>
+                    <h2>Good to see you, Nihal.</h2>
+                    <p>
+                        Keep your projects organized and your work moving forward.
+                    </p>
+                </div>
+
+                <button class="secondary-btn" id="welcomeTaskBtn">
+                    Create a task
+                </button>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <span>Total Tasks</span>
+                    <strong id="totalTasks">0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span>In Progress</span>
+                    <strong id="inProgressTasks">0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span>Completed</span>
+                    <strong id="completedTasks">0</strong>
+                </div>
+
+                <div class="stat-card">
+                    <span>High Priority</span>
+                    <strong id="highPriorityTasks">0</strong>
+                </div>
+
+            </div>
+
+            <!-- Overview content -->
+            <div class="content-grid">
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>Recent Work</h3>
+                            <p>Your latest tasks</p>
+                        </div>
+
+                        <button class="text-btn" id="viewAllTasksBtn">
+                            View all
+                        </button>
+                    </div>
+
+                    <div id="recentTasks" class="task-list"></div>
+                </div>
+
+                <div class="panel progress-panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3>Progress</h3>
+                            <p>Overall task completion</p>
+                        </div>
+                    </div>
+
+                    <div class="progress-circle">
+                        <div class="progress-inner">
+                            <strong id="progressPercentage">0%</strong>
+                            <span>Complete</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-summary">
+                        <span id="progressSummary">0 of 0 tasks completed</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- PROJECTS -->
+        <section class="page-section" id="projectsSection">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Projects</h2>
+                    <p>Organize your work by project.</p>
+                </div>
+
+                <button class="primary-btn" id="newProjectBtn">
+                    + New Project
+                </button>
+            </div>
+
+            <div id="projectsGrid" class="projects-grid"></div>
+
+        </section>
+
+        <!-- TASKS -->
+        <section class="page-section" id="tasksSection">
+
+            <div class="section-heading">
+                <div>
+                    <h2>My Tasks</h2>
+                    <p>View and manage everything you're working on.</p>
+                </div>
+            </div>
+
+            <div class="filters">
+
+                <div class="search-box">
+                    <span>⌕</span>
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search tasks..."
+                    >
+                </div>
+
+                <select id="projectFilter">
+                    <option value="all">All projects</option>
+                </select>
+
+                <select id="statusFilter">
+                    <option value="all">All statuses</option>
+                    <option value="todo">To do</option>
+                    <option value="progress">In progress</option>
+                    <option value="completed">Completed</option>
+                </select>
+
+                <select id="priorityFilter">
+                    <option value="all">All priorities</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+
+            </div>
+
+            <div id="allTasks" class="task-list large-list"></div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- TASK CREATE MODAL -->
+<!-- ========================= -->
+
+<div class="modal" id="taskModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <div>
+                <h2>New Task</h2>
+                <p>Add a new piece of work.</p>
+            </div>
+
+            <button class="close-btn" data-close="taskModal">
+                ×
+            </button>
+        </div>
+
+        <form id="taskForm">
+
+            <label>
+                Task title
+                <input
+                    type="text"
+                    id="taskTitle"
+                    placeholder="e.g. Finish portfolio"
+                    required
+                >
+            </label>
+
+            <label>
+                Description
+                <textarea
+                    id="taskDescription"
+                    placeholder="Add some details..."
+                ></textarea>
+            </label>
+
+            <div class="form-row">
+
+                <label>
+                    Project
+                    <select id="taskProject"></select>
+                </label>
+
+                <label>
+                    Priority
+                    <select id="taskPriority">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </label>
+
+            </div>
+
+            <label>
+                Due date
+                <input type="date" id="taskDueDate">
+            </label>
+
+            <div class="modal-actions">
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    data-close="taskModal"
+                >
+                    Cancel
+                </button>
+
+                <button type="submit" class="primary-btn">
+                    Create Task
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- TASK DETAILS MODAL -->
+<!-- ========================= -->
+
+<div class="modal" id="detailsModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <div>
+                <span class="eyebrow">Task details</span>
+                <h2 id="detailsTitle">Task</h2>
+            </div>
+
+            <button class="close-btn" data-close="detailsModal">
+                ×
+            </button>
+        </div>
+
+        <div class="details-body">
+
+            <div class="detail-status-row">
+                <span id="detailsStatus" class="status-badge"></span>
+                <span id="detailsPriority" class="priority-badge"></span>
+            </div>
+
+            <div class="detail-block">
+                <span>Description</span>
+                <p id="detailsDescription"></p>
+            </div>
+
+            <div class="detail-grid">
+
+                <div class="detail-block">
+                    <span>Project</span>
+                    <strong id="detailsProject"></strong>
+                </div>
+
+                <div class="detail-block">
+                    <span>Due date</span>
+                    <strong id="detailsDueDate"></strong>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="edit-area">
+
+            <h3>Edit Task</h3>
+
+            <form id="editTaskForm">
+
+                <label>
+                    Title
+                    <input type="text" id="editTaskTitle" required>
+                </label>
+
+                <label>
+                    Description
+                    <textarea id="editTaskDescription"></textarea>
+                </label>
+
+                <div class="form-row">
+
+                    <label>
+                        Status
+                        <select id="editTaskStatus">
+                            <option value="todo">To do</option>
+                            <option value="progress">In progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        Priority
+                        <select id="editTaskPriority">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </label>
+
+                </div>
+
+                <label>
+                    Due date
+                    <input type="date" id="editTaskDueDate">
+                </label>
+
+                <div class="modal-actions">
+
+                    <button
+                        type="button"
+                        class="danger-btn"
+                        id="deleteTaskBtn"
+                    >
+                        Delete
+                    </button>
+
+                    <div>
+                        <button
+                            type="button"
+                            class="secondary-btn"
+                            data-close="detailsModal"
+                        >
+                            Cancel
+                        </button>
+
+                        <button type="submit" class="primary-btn">
+                            Save Changes
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- PROJECT MODAL -->
+<!-- ========================= -->
+
+<div class="modal" id="projectModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <div>
+                <h2>New Project</h2>
+                <p>Create a workspace for related tasks.</p>
+            </div>
+
+            <button class="close-btn" data-close="projectModal">
+                ×
+            </button>
+        </div>
+
+        <form id="projectForm">
+
+            <label>
+                Project name
+                <input
+                    type="text"
+                    id="projectName"
+                    placeholder="e.g. Portfolio Website"
+                    required
+                >
+            </label>
+
+            <label>
+                Description
+                <textarea
+                    id="projectDescription"
+                    placeholder="What is this project about?"
+                ></textarea>
+            </label>
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    data-close="projectModal"
+                >
+                    Cancel
+                </button>
+
+                <button type="submit" class="primary-btn">
+                    Create Project
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
